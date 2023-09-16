@@ -22,18 +22,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-         
-
-        Route::group(['prefix' => 'album', 'as' => 'album.'], function () {
-        Route::get('/', [AlbumController::class, 'index'])->name('index');
-        Route::get('/Datatable', [AlbumController::class, 'datatable'])->name('albumDatatable');
-        Route::get('/stroe', [AlbumController::class, 'add'])->name('albumadd');
-        Route::post('/stroe', [AlbumController::class, 'store'])->name('albumstore');
-        Route::get('/edit/{id}', [AlbumController::class, 'edit'])->name('albumedit');
-        Route::post('/update/{id}', [AlbumController::class, 'update'])->name('albumupdate');
-        Route::post('/delete', [AlbumController::class, 'delete'])->name('albumdelete');
-        Route::get('/deleteandmove/{id}', [AlbumController::class, 'deleteandmove'])->name('deleteandmove');
+    Route::group(['prefix' => 'album', 'as' => 'album.'], function () {
+    Route::get('/', [AlbumController::class, 'index'])->name('index');
+    Route::get('/Datatable', [AlbumController::class, 'datatable'])->name('albumDatatable');
+    Route::get('/store', [AlbumController::class, 'add'])->name('albumadd');
+    //Route::post('/storex', [AlbumController::class, 'store'])->name('albumstore');
+    Route::post('/store', [AlbumController::class, 'storedata'])->name('albumstoredata');
+    Route::get('/edit/{id}', [AlbumController::class, 'edit'])->name('albumedit');
+    Route::post('/update/{id}', [AlbumController::class, 'update'])->name('albumupdate');
+    Route::post('/delete', [AlbumController::class, 'delete'])->name('albumdelete');
+    Route::get('/deleteandmove/{id}', [AlbumController::class, 'deleteandmove'])->name('deleteandmove');
         
             });
 

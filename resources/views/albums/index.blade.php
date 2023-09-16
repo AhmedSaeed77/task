@@ -45,7 +45,7 @@ padding: 2px;">
                         }
                     },
                     columns: [{
-                            data: 'id'
+                            data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false
                         },
                         {
                             data: 'name'

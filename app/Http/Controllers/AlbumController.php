@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Album;
 use Illuminate\Support\Facades\File;
 use App\Models\AlbumImage;
+use App\ImageUpload;
 
 class AlbumController extends Controller
 {
@@ -54,38 +55,36 @@ class AlbumController extends Controller
         return view('albums.addalbum');
     }
 
-    
-    public function store(Request $request)
+    public function storedata(Request $request)
     {
-        $request->validate([
-            'name'=>'required',
-            
-          ],[
-             'name'=>' ألاسم المقال مطلوب ',
-                       ]);
+        //dd($request);
+        $imageUpload = new Album();
+        $imageUpload->name = "hhh";
+        $imageUpload->user_id = Auth::user()->id;
+        $imageUpload->save();
 
-        $album = new Album();
-        $album->name = $request->name;
-        $album->user_id = Auth::user()->id;
-        $album->save();
-
-        if($request->file('images'))
+        if($request->hasFile('file'))
         {
-            foreach($request->file('images') as $image)
+            $file = $request->file('file');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('public/images/dropzone', $filename);
+            if($path)
             {
-                $albumimage = new AlbumImage();
-                $albumimage->name = $album->name;
-
-                $file = $image;
-                $filename = $file->getClientOriginalName();
-                $file->move('images/albums', $filename);
-                $albumimage->image = $filename;
-
-                $albumimage->album_id = $album->id;
-                $albumimage->save();
+                $album = new AlbumImage();
+                $imageUpload->images()->create([
+                                                    'name' => $imageUpload->name,
+                                                    'album_id'=> $imageUpload->id,
+                                                    'image' => $filename,
+                                                ]);
+                return response()->json(['upload' => 'success',200]);
+            }
+            else
+            {
+                return response()->json(['upload' => 'failed',401]);
             }
         }
-        return redirect()->route('album.index');
+
+        return redirect()->route('album.index'); 
     }
 
     public function edit($id)
@@ -109,7 +108,7 @@ class AlbumController extends Controller
         $album->user_id = Auth::user()->id;
         $album->save();
 
-        if($request->file('images'))
+        if($request->file('file'))
         {
             $albumimage = AlbumImage::where('album_id', $album->id)->get();
 
